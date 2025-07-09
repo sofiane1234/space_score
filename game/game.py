@@ -2,10 +2,10 @@ import sys
 import time
 import pygame
 from pygame.locals import *
-
 from game.player_class import Player
 from game.second_player_class import SecondPlayer
 from graphic.affichage import *
+from graphic.menu import Menu
 
 
 class Game:
@@ -19,7 +19,7 @@ class Game:
         self.ship_bord = [ [40, self.reso[0] - 50], 
                         [40, self.reso[1] - 50] ]
         
-        self.titre = "Space Battle"
+        self.titre = "Space Scoring : Battle"
         self.is_running = True
         self.is_playing = False
         self.j1_score = 0
@@ -34,15 +34,16 @@ class Game:
         self.fin_partie_timer = 3
        
         self.play_button = pygame.image.load('assets/start_button.png')
-
         self.first_player = pygame.image.load("assets/first_ship.png")
         self.second_player = pygame.image.load("assets/second_ship.png")
         self.img_bullet = pygame.image.load("assets/bullet.png")
+        self.img_start = pygame.image.load("assets/start_button.png")
 
         self.p1 = Player((200, 200), 5, self.first_player, self.img_bullet)
         self.p2 = SecondPlayer((700, 200), 5, self.second_player, self.img_bullet)
         self.all_bullets = pygame.sprite.Group()
         self.all_bullets_p2 = pygame.sprite.Group()
+        self.start_button = Menu((300, 500), self.img_bullet)
 
         self.fin_partie_start = 0
         self.start()
@@ -54,7 +55,7 @@ class Game:
         pygame.display.set_caption(self.titre)
 
         while self.is_running:
-            text_screen("SPACE BATTLE ", self.score_font_size, pygame.Color(0,0,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 - 70))
+            text_screen("SPACE SCORING : BATTLE ", self.score_font_size, pygame.Color(0,0,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 - 70))
             text_screen(" J1 : Z avancer, D pivoter droite, Q pivoter gauche, S reculer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 + 70))
             text_screen(" J2 : O avancer, M pivoter droite, J pivoter gauche, L reculer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 + 150))
             text_screen("Appuyez sur Espace pour lancer la partie !", self.score_font_size, pygame.Color(255,255,255), self.screen, self.win_pos)
@@ -65,7 +66,6 @@ class Game:
                 self.get_events(evt)
                 self.run()
             
-
     def run(self):
         while self.is_playing:
             for evt in pygame.event.get():
