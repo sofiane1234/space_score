@@ -1,6 +1,6 @@
-# space_score
-# Un projet de DRARIS Sofiane
-# Projet mvp en cours de developpement
+# SPACE SCORING : BATTLE
+  Un projet de DRARIS Sofiane
+  Projet mvp en cours de developpement
 
 
 # Mouvements du joueur 1
