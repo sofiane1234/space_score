@@ -33,17 +33,14 @@ class Game:
         self.clock = pygame.time.Clock()
         self.fin_partie_timer = 3
        
-        self.play_button = pygame.image.load('assets/start_button.png')
         self.first_player = pygame.image.load("assets/first_ship.png")
         self.second_player = pygame.image.load("assets/second_ship.png")
         self.img_bullet = pygame.image.load("assets/bullet.png")
-        self.img_start = pygame.image.load("assets/start_button.png")
 
         self.p1 = Player((200, 200), 5, self.first_player, self.img_bullet)
         self.p2 = SecondPlayer((700, 200), 5, self.second_player, self.img_bullet)
         self.all_bullets = pygame.sprite.Group()
         self.all_bullets_p2 = pygame.sprite.Group()
-        self.start_button = Menu((300, 500), self.img_bullet)
 
         self.fin_partie_start = 0
         self.start()
@@ -51,7 +48,9 @@ class Game:
     #Initialisation de la fenetre et changement de son titre
     def start(self):
         pygame.init()
-        self.screen = pygame.display.set_mode(self.reso)
+        
+        flags = pygame.RESIZABLE
+        self.screen = pygame.display.set_mode(self.reso, flags)
         pygame.display.set_caption(self.titre)
 
         while self.is_running:
@@ -68,32 +67,39 @@ class Game:
             
     def run(self):
         while self.is_playing:
+            screen_width, screen_height = self.screen.get_size()
+
+            # Bordures dynamiques
+
+            ship_bord_x = [40, screen_width - 50]
+            ship_bord_y = [40, screen_height - 50]
+
             for evt in pygame.event.get():
                 self.get_events(evt)
                  
               # limites bord angle x joueur 1
-            if self.p1.pos[0] < self.ship_bord[0][0]:
-                self.p1.pos = (self.ship_bord[0][0], self.p1.pos[1])
-            elif self.p1.pos[0] > self.ship_bord[0][1]:
-                self.p1.pos = (self.ship_bord[0][1], self.p1.pos[1])
+            if self.p1.pos[0] < ship_bord_x[0]:
+                self.p1.pos = (ship_bord_x[0], self.p1.pos[1])
+            elif self.p1.pos[0] > ship_bord_x[1]:
+                self.p1.pos = (ship_bord_x[1], self.p1.pos[1])
             
            # limites bord angle y joueur 1
-            if self.p1.pos[1] < self.ship_bord[1][0]:
-                self.p1.pos = (self.p1.pos[0], self.ship_bord[1][0])
-            elif self.p1.pos[1] > self.ship_bord[1][1]:
-                self.p1.pos = (self.p1.pos[0], self.ship_bord[1][1])
+            if self.p1.pos[1] < ship_bord_y[0] + 60:
+                self.p1.pos = (self.p1.pos[0], ship_bord_y[0] + 59)
+            elif self.p1.pos[1] > ship_bord_y[1]:
+                self.p1.pos = (self.p1.pos[0], ship_bord_y[1])
 
              # limites bord angle x joueur 2
-            if self.p2.pos[0] < self.ship_bord[0][0]:
-                self.p2.pos = (self.ship_bord[0][0], self.p2.pos[1])
-            elif self.p2.pos[0] > self.ship_bord[0][1]:
-                self.p2.pos = (self.ship_bord[0][1], self.p2.pos[1])
+            if self.p2.pos[0] < ship_bord_x[0]:
+                self.p2.pos = (ship_bord_x[0], self.p2.pos[1])
+            elif self.p2.pos[0] > ship_bord_x[1]:
+                self.p2.pos = (ship_bord_x[1], self.p2.pos[1])
             
             # limites bord angle y joueur 2
-            if self.p2.pos[1] < self.ship_bord[1][0]:
-                self.p2.pos = (self.p2.pos[0], self.ship_bord[1][0])
-            elif self.p2.pos[1] > self.ship_bord[1][1]:
-                self.p2.pos = (self.p2.pos[0], self.ship_bord[1][1])
+            if self.p2.pos[1] < ship_bord_y[0] + 60:
+                self.p2.pos = (self.p2.pos[0], ship_bord_y[0] + 59)
+            elif self.p2.pos[1] > ship_bord_y[1]:
+                self.p2.pos = (self.p2.pos[0], ship_bord_y[1])
 
             self.p1.get_inputs()
             self.p2.get_inputs()
