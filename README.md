@@ -4,15 +4,15 @@
 
 
 # Mouvements du joueur 1
-# Z, Q, S, D
-# Tirer : Alt
+  Z, Q, S, D
+  Tirer : Alt
 
 # Mouvements du joueur 2
-# O, K, L, M
-# Tirer : Alt Gr
+  O, K, L, M
+  Tirer : Alt Gr
 
 # Fonctionnalites apportees
-# Mouvements des joueurs
-# Gestion de collisions
-# Gestion des tirs
-# Affichage du score
+ - Mouvements des joueurs
+ - Gestion de collisions
+ - Gestion des tirs
+ - Affichage du score
