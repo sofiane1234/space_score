@@ -4,12 +4,18 @@
 
 
 # Mouvements du joueur 1
-  - Z, Q, S, D
-  - Tirer : Alt
+  - Z : Avancer, 
+  - Q : Pivoter a gauche, 
+  - S : Reculer, 
+  - D : Pivoter a droite,
+  - Alt : Tirer
 
 # Mouvements du joueur 2
-  - O, K, L, M
-  - Tirer : Alt Gr
+  - O : Avancer, 
+  - K : Pivoter a gauche, 
+  - L : Reculer, 
+  - M : Pivoter a droite
+  - Alt Gr : Tirer
 
 # Fonctionnalites apportees
  - Mouvements des joueurs au clavier
