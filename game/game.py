@@ -45,7 +45,7 @@ class Game:
         self.fin_partie_start = 0
         self.start()
 
-    #Initialisation de la fenetre et changement de son titre
+    #Initialisation de la fenetre et de son titre
     def start(self):
         pygame.init()
         
@@ -54,9 +54,9 @@ class Game:
         pygame.display.set_caption(self.titre)
 
         while self.is_running:
-            text_screen("SPACE SCORING : BATTLE ", self.score_font_size, pygame.Color(0,0,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 - 70))
-            text_screen(" J1 : Z avancer, D pivoter droite, Q pivoter gauche, S reculer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 + 70))
-            text_screen(" J2 : O avancer, M pivoter droite, J pivoter gauche, L reculer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 + 150))
+            text_screen("SPACE SCORING : BATTLE ", self.score_font_size, pygame.Color(10,255,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 - 70))
+            text_screen(" J1 : Z avancer, D pivoter droite, Q pivoter gauche, S reculer Alt tirer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 20, self.reso[1]/2 + 70))
+            text_screen(" J2 : O avancer, M pivoter droite, J pivoter gauche, L reculer AltGr tirer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 20, self.reso[1]/2 + 150))
             text_screen("Appuyez sur Espace pour lancer la partie !", self.score_font_size, pygame.Color(255,255,255), self.screen, self.win_pos)
             
             pygame.display.update()
@@ -69,7 +69,7 @@ class Game:
         while self.is_playing:
             screen_width, screen_height = self.screen.get_size()
 
-            # Bordures dynamiques
+            # Bordures
 
             ship_bord_x = [40, screen_width - 50]
             ship_bord_y = [40, screen_height - 50]
@@ -140,15 +140,21 @@ class Game:
     
     def draw_victoire_j2(self):
         self.fin_partie_start = time.time()
-        while time.time() - self.fin_partie_start < self.fin_partie_timer:
+        restart = False
+        
+        while not restart:
             for evt in pygame.event.get():
-                if evt.type == QUIT:
+                if evt.type == QUIT or evt.type == KEYDOWN and evt.key == K_ESCAPE:
                     sys.exit()
-
+                elif evt.type == KEYDOWN and evt.key == K_SPACE:
+                    restart = True
+                
             self.screen.fill(pygame.Color(155,0,0))
             text_screen("Joueur 2 Gagne !", self.score_font_size, pygame.Color(255,255,0), self.screen, self.win_pos)
             text_screen("Avec un score de : " + str(self.j2_score), self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 15, self.reso[1] /2 + 40))
-            text_screen("Veuillez patienter", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0] /2, self.reso[1]/2 + 70))
+            text_screen("Appuyez sur ESPACE pour reprendre et augmenter votre score", self.score_font_size, pygame.Color(255,0,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 90))
+            text_screen("!ATTENTION! vous perdrez votre score si vous perdez", self.score_font_size, pygame.Color(255,255,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 125))
+
             pygame.display.update()
             self.p1.vies = 5
             self.p2.vies = 5
@@ -158,16 +164,21 @@ class Game:
 
     def draw_victoire_j1(self):
         self.fin_partie_start = time.time()
-        while time.time() - self.fin_partie_start < self.fin_partie_timer:
+        restart = False
+        while not restart:
 
             for evt in pygame.event.get():
                 if evt.type == QUIT:
                     sys.exit()
+                elif evt.type == KEYDOWN and evt.key == K_SPACE:
+                    restart = True
 
             self.screen.fill(pygame.Color(155,0,0))
             text_screen("Joueur 1 Gagne !", self.score_font_size, pygame.Color(255,255,0), self.screen, self.win_pos)
             text_screen("Avec un score de : " + str(self.j1_score), self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 15, self.reso[1] /2 + 40))
-            text_screen("Veuillez patienter", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0] /2, self.reso[1]/2 + 70))
+            text_screen("Appuyez sur ESPACE pour reprendre et augmenter votre score", self.score_font_size, pygame.Color(255,0,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 90))
+            text_screen("!ATTENTION! vous perdrez votre score si vous perdez", self.score_font_size, pygame.Color(255,255,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 125))
+
             pygame.display.update()
             self.p2.vies = 5
             self.p1.vies = 5
@@ -188,7 +199,6 @@ class Game:
                 self.p1.vies = 0
                 self.draw_victoire_j2()            
             print("J1 perd une vie") 
-
 
         
         #Joueur 2
