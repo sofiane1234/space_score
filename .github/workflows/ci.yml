@@ -21,10 +21,6 @@ jobs:
 
       - name: Installer le package avec setup.py
         run: pip install .
-
-      - name: Installer Pytest pour les tests
-        run: pip install pytest
-
       
       - name: Lancer les tests
         run: pytest tests/
