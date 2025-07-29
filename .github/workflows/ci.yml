@@ -1,4 +1,4 @@
-name: CI Python
+name: CI Python Sans Setup
 
 on:
   push:
@@ -14,16 +14,21 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v3
 
-      - name: Configuration de Python
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Installer le package
-        run: pip install .
+      - name: Créer requirements.txt temporaire
+        run: |
+          echo "pygame" >> requirements.txt
+          echo "pytest" >> requirements.txt
 
-      - name: Installer Pytest
-        run: pip install pytest
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Ajouter le chemin source (pour les imports)
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
 
       - name: Lancer les tests
         run: pytest tests/
