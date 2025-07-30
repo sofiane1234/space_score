@@ -1,4 +1,4 @@
-name: CI Python Sans Setup
+name: CI Pipeline
 
 on:
   push:
