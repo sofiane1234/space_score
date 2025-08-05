@@ -6,6 +6,7 @@ from game.player_class import Player
 from game.second_player_class import SecondPlayer
 from graphic.affichage import *
 from graphic.menu import Menu
+from supervision.supervisor import Supervisor
 
 
 class Game:
@@ -31,6 +32,7 @@ class Game:
         self.score_pos_j2 = (self.reso[0] - 100, 30)
         self.vies_pos_j2 = (self.reso[0] - 300, 30) 
         self.clock = pygame.time.Clock()
+        self.superviseur = Supervisor()
         self.fin_partie_timer = 3
        
         self.first_player = pygame.image.load("assets/first_ship.png")
@@ -111,11 +113,11 @@ class Game:
         if evt.type == QUIT:
             self.is_running, self.is_playing = False, False
         if evt.type == KEYDOWN:
-            if evt.key == K_LALT:
+            if evt.key == K_LALT and self.is_playing == True:
                 bullet = self.p1.tirer()
                 if bullet:
                     self.all_bullets.add(bullet)
-            elif evt.key == K_RALT:
+            elif evt.key == K_RALT and self.is_playing == True:
                 bullet = self.p2.tirer()
                 if bullet:
                     self.all_bullets_p2.add(bullet)
@@ -142,6 +144,7 @@ class Game:
         self.fin_partie_start = time.time()
         restart = False
         
+        
         while not restart:
             for evt in pygame.event.get():
                 if evt.type == QUIT or evt.type == KEYDOWN and evt.key == K_ESCAPE:
@@ -160,6 +163,7 @@ class Game:
             self.p2.vies = 5
             self.j2_score = self.j2_score
             self.j1_score = 0
+            self.superviseur.reset_alertes()
            
 
     def draw_victoire_j1(self):
@@ -183,6 +187,7 @@ class Game:
             self.p2.vies = 5
             self.p1.vies = 5
             self.j2_score = 0
+            self.superviseur.reset_alertes()
            
 
     #Gestion des collisions
@@ -197,8 +202,9 @@ class Game:
             self.j2_score += 5
             while self.p1.vies < 0:
                 self.p1.vies = 0
-                self.draw_victoire_j2()            
+                self.draw_victoire_j2()
             print("J1 perd une vie") 
+            
 
         
         #Joueur 2
@@ -219,7 +225,6 @@ class Game:
     def clear_bullets(self, group):
 
         for bullet in group.sprites():
-
             if bullet.rect.centerx < self.bord[0][0] or bullet.rect.centerx > self.bord[0][1]:
                 self.all_bullets.remove(bullet)
             if bullet.rect.centery < self.bord[1][0] or bullet.rect.centery > self.bord[1][1]:
@@ -240,6 +245,9 @@ class Game:
         self.draw_score() 
         self.draw_vies()
         self.gerer_collision()
+        self.superviseur.check_vie(self.p1, "J1")
+        self.superviseur.check_vie(self.p2, "J2")
+        self.superviseur.draw_alertes(self.screen, self.reso, text_screen)
         self.clock.tick(60)
         pygame.display.update()
     
