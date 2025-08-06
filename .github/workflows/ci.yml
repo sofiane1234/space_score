@@ -68,5 +68,6 @@ jobs:
         BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     
     - name: Génération du journal de version
-      run: echo "Version : ${{ env.VERSION }}" > dist/version.txt
+      run: |
+        echo "Version : ${{ env.VERSION }}" > dist/version.txt
       shell: bash
