@@ -63,7 +63,7 @@ jobs:
       shell: powershell
 
     - name: Push vers Itch.io avec Butler
-      run: ./butler/butler.exe push dist/ sofiane/space_score:${{ env.VERSION }}
+      run: ./butler/butler.exe push dist/ sossof/space_score:${{ env.VERSION }}
       env:
         BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
     
