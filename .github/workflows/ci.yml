@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI-CD Pipeline
 
 on:
   push:
@@ -27,8 +27,46 @@ jobs:
       - name: Installer les dépendances
         run: pip install -r requirements.txt
 
-      - name: Ajouter le chemin source (pour les imports)
-        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+      - name: Ajouter le chemin source
+        run: echo "PYTHONPATH=$PWD/src" >> $GITHUB_ENV
 
       - name: Lancer les tests
-        run: pytest tests/
+        run: pytest src/tests/
+        
+  deploy:
+    needs: build-and-test
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout du code
+      uses: actions/checkout@v3
+
+    - name: Installer Python & PyInstaller
+      run: pip install pyinstaller pygame
+
+    - name: Générer un tag de version
+      run: echo "VERSION=$(date +'%Y.%m.%d.%H%M')" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Build le jeu Windows avec PyInstaller
+      run: pyinstaller src/main.py --onefile --noconsole --name space_score --add-data "src/assets;assets"
+      shell: bash
+
+    - name: Copier tout le dossier src dans dist
+      run: copy -Recurse src dist/src
+      shell: powershell
+
+    - name: Télécharger et configurer Butler
+      run: |
+        iwr -useb https://broth.itch.ovh/butler/windows-amd64/latest/archive.zip -OutFile butler.zip
+        Expand-Archive butler.zip -DestinationPath butler
+      shell: powershell
+
+    - name: Push vers Itch.io avec Butler
+      run: ./butler/butler.exe push dist/ sofiane/space_score:${{ env.VERSION }}
+      env:
+        BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+    
+    - name: Génération du journal de version
+      run: echo "Version : ${{ env.VERSION }}" > dist/version.txt
+      shell: bash

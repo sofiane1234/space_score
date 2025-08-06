@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import time
 import pygame
 from pygame.locals import *
@@ -8,6 +8,10 @@ from graphic.affichage import *
 from graphic.menu import Menu
 from supervision.supervisor import Supervisor
 
+def chemin_fichier(relatif):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relatif)
+    return os.path.join(os.path.abspath("."), relatif)
 
 class Game:
     def __init__(self, reso):
@@ -35,9 +39,9 @@ class Game:
         self.superviseur = Supervisor()
         self.fin_partie_timer = 3
        
-        self.first_player = pygame.image.load("assets/first_ship.png")
-        self.second_player = pygame.image.load("assets/second_ship.png")
-        self.img_bullet = pygame.image.load("assets/bullet.png")
+        self.first_player = pygame.image.load(chemin_fichier("assets/first_ship.png"))
+        self.second_player = pygame.image.load(chemin_fichier("assets/second_ship.png"))
+        self.img_bullet = pygame.image.load(chemin_fichier("assets/bullet.png"))
 
         self.p1 = Player((200, 200), 5, self.first_player, self.img_bullet)
         self.p2 = SecondPlayer((700, 200), 5, self.second_player, self.img_bullet)
@@ -249,7 +253,7 @@ class Game:
         self.superviseur.check_vie(self.p2, "J2")
         self.superviseur.draw_alertes(self.screen, self.reso, text_screen)
         self.clock.tick(60)
-        pygame.display.update()
+        pygame.display.flip()
     
     #Mise en arret du programme
     def quit(self):
