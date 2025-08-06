@@ -1,3 +1,5 @@
+Petit test pour voir si mon terminal detecte un problème
+
 # SPACE SCORING : BATTLE
   Un projet de DRARIS Sofiane
   Projet mvp en cours de developpement
