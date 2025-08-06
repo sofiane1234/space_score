@@ -58,7 +58,7 @@ jobs:
 
     - name: Télécharger et configurer Butler
       run: |
-        iwr -useb https://broth.itch.ovh/butler/windows-amd64/latest/archive.zip -OutFile butler.zip
+        iwr -useb https://github.com/itchio/butler/releases/latest/download/butler.zip -OutFile butler.zip
         Expand-Archive butler.zip -DestinationPath butler
       shell: powershell
 
