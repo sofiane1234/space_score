@@ -71,8 +71,16 @@ jobs:
       - name: Smoke test
         shell: powershell
         run: |
-          Start-Process dist/space_score.exe -Wait
-          Write-Host "Smoke test passed"
+          $p = Start-Process dist/space_score.exe -PassThru
+          Start-Sleep -Seconds 30
+          if (-not $p.HasExited) {
+            Stop-Process -Id $p.Id -Force
+            Write-Host "Processus s'est terminé correctement"
+          } else {
+            Write-Host "Processus s'est terminé prématurément"
+            exit 1
+          }
+          
 
       - name: Télécharger et configurer Butler
         shell: powershell
