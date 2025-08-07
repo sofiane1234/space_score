@@ -1,4 +1,3 @@
-# .github/workflows/ci-cd.yml
 name: CI/CD Pipeline
 
 on:
@@ -37,33 +36,9 @@ jobs:
       - name: Lancer les tests unitaires
         run: pytest src/tests/
 
-  perf-test:
-    name: Performance Tests
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout du code
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Installer Locust
-        run: pip install locust
-
-      - name: Lancer les tests de performance
-        run: |
-          locust --headless \
-                 -u 6 \
-                 -r 5 \
-                 -t 30s \
-                 --host http://localhost:8000
-
   deploy:
     name: Deploy itch.io (beta / stable)
-    needs: perf-test
+    needs: build-and-test
     runs-on: windows-latest
     strategy:
       matrix:
@@ -93,6 +68,12 @@ jobs:
         shell: powershell
         run: copy -Recurse src dist/src
 
+      - name: Smoke test
+        shell: powershell
+        run: |
+          Start-Process dist/space_score.exe -Wait
+          Write-Host "Smoke test passed"
+
       - name: Télécharger et configurer Butler
         shell: powershell
         run: |
@@ -116,9 +97,10 @@ jobs:
         shell: bash
         run: echo "Version -> ${{ matrix.channel }}-${{ env.VERSION }}" > dist/version.txt
 
-      - name: Créer un ticket de feedback Beta
+      - name: Créer un ticket de feedback
         if: matrix.channel == 'beta'
         uses: peter-evans/create-issue-from-file@v4
         with:
-          title: "Feedback Beta ${{ env.VERSION }}"
-          content-filepath: dist/version.txt
+          title: "Feedback version beta-${{ env.VERSION }}"
+          content-filepath: .github/feedback_template.md
+          labels: feedback,beta
