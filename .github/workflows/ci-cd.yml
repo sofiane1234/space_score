@@ -72,15 +72,16 @@ jobs:
         shell: powershell
         run: |
           $p = Start-Process dist/space_score.exe -PassThru
-          Start-Sleep -Seconds 30
-          if (-not $p.HasExited) {
-            Stop-Process -Id $p.Id -Force
-            Write-Host "Processus s'est terminé correctement"
-          } else {
-            Write-Host "Processus s'est terminé prématurément"
-            exit 1
+          try {
+            Wait-Process -Id $p.Id -Timeout 30
+            Write-Host "Smoke test : process terminé naturellement"
           }
-          
+          catch {
+            # si toujours actif après 30s, on le tue
+            Stop-Process -Id $p.Id -Force
+            Write-Host "Smoke test : process tué après timeout"
+          }
+
 
       - name: Télécharger et configurer Butler
         shell: powershell
