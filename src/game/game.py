@@ -29,7 +29,9 @@ class Game:
         self.is_playing = False
         self.j1_score = 0
         self.j2_score = 0
-        self.score_font_size = 25
+        self.score_font_size = 13
+        self.txt_font_size = 11
+        self.title_font_size = 26
         self.score_pos_j1 = (self.reso[0] - self.reso[0] + 100, 30)
         self.win_pos = (self.reso[0]/2, self.reso[1]/2)
         self.vies_pos_j1 = (self.reso[0] - self.reso[0] + 300, 30)
@@ -42,6 +44,7 @@ class Game:
         self.first_player = pygame.image.load(chemin_fichier("assets/first_ship.png"))
         self.second_player = pygame.image.load(chemin_fichier("assets/second_ship.png"))
         self.img_bullet = pygame.image.load(chemin_fichier("assets/bullet.png"))
+        self.ico = pygame.image.load(chemin_fichier("assets/icon.png"))
 
         self.p1 = Player((200, 200), 5, self.first_player, self.img_bullet)
         self.p2 = SecondPlayer((700, 200), 5, self.second_player, self.img_bullet)
@@ -58,12 +61,13 @@ class Game:
         flags = pygame.RESIZABLE
         self.screen = pygame.display.set_mode(self.reso, flags)
         pygame.display.set_caption(self.titre)
+        pygame.display.set_icon(self.ico)
 
         while self.is_running:
-            text_screen("SPACE SCORING : BATTLE ", self.score_font_size, pygame.Color(10,255,0), self.screen, (self.reso[0]/2 + 70, self.reso[1]/2 - 70))
-            text_screen(" J1 : Z avancer, D pivoter droite, Q pivoter gauche, S reculer Alt tirer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 20, self.reso[1]/2 + 70))
-            text_screen(" J2 : O avancer, M pivoter droite, J pivoter gauche, L reculer AltGr tirer ", self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 20, self.reso[1]/2 + 150))
-            text_screen("Appuyez sur Espace pour lancer la partie !", self.score_font_size, pygame.Color(255,255,255), self.screen, self.win_pos)
+            text_screen("SPACE SCORING : BATTLE ", self.title_font_size, pygame.Color(10,255,0), self.screen, (self.reso[0]/2, self.reso[1]/2 - 70))
+            text_screen(" J1 : Z avancer, D pivoter droite, Q pivoter gauche, S reculer, Alt tirer ", self.txt_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 20, self.reso[1]/2 + 70))
+            text_screen(" J2 : O avancer, M pivoter droite, J pivoter gauche, L reculer, AltGr tirer ", self.txt_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 20, self.reso[1]/2 + 150))
+            text_screen("Appuyez sur Espace pour lancer la partie !", self.txt_font_size + 3, pygame.Color(255,255,255), self.screen, self.win_pos)
             
             pygame.display.update()
             self.screen.fill('blue')            
@@ -114,7 +118,7 @@ class Game:
     
     #Fonction permettant de gerer les events
     def get_events(self, evt):
-        if evt.type == QUIT:
+        if evt.type == QUIT or (evt.type == KEYDOWN and evt.key == K_ESCAPE):
             self.is_running, self.is_playing = False, False
         if evt.type == KEYDOWN:
             if evt.key == K_LALT and self.is_playing == True:
@@ -157,10 +161,10 @@ class Game:
                     restart = True
                 
             self.screen.fill(pygame.Color(155,0,0))
-            text_screen("Joueur 2 Gagne !", self.score_font_size, pygame.Color(255,255,0), self.screen, self.win_pos)
-            text_screen("Avec un score de : " + str(self.j2_score), self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 15, self.reso[1] /2 + 40))
-            text_screen("Appuyez sur ESPACE pour reprendre et augmenter votre score", self.score_font_size, pygame.Color(255,0,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 90))
-            text_screen("!ATTENTION! vous perdrez votre score si vous perdez", self.score_font_size, pygame.Color(255,255,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 125))
+            text_screen("Joueur 2 Gagne !", self.txt_font_size + 15, pygame.Color(255,255,0), self.screen, self.win_pos)
+            text_screen("Avec un score de : " + str(self.j2_score), self.txt_font_size + 5, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 - 10, self.reso[1] /2 + 40))
+            text_screen("Appuyez sur ESPACE pour reprendre et augmenter votre score", self.txt_font_size + 3, pygame.Color(255,0,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 90))
+            text_screen("!ATTENTION! vous perdrez votre score si vous perdez", self.txt_font_size + 5, pygame.Color(255,255,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 125))
 
             pygame.display.update()
             self.p1.vies = 5
@@ -182,10 +186,10 @@ class Game:
                     restart = True
 
             self.screen.fill(pygame.Color(155,0,0))
-            text_screen("Joueur 1 Gagne !", self.score_font_size, pygame.Color(255,255,0), self.screen, self.win_pos)
-            text_screen("Avec un score de : " + str(self.j1_score), self.score_font_size, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + 15, self.reso[1] /2 + 40))
-            text_screen("Appuyez sur ESPACE pour reprendre et augmenter votre score", self.score_font_size, pygame.Color(255,0,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 90))
-            text_screen("!ATTENTION! vous perdrez votre score si vous perdez", self.score_font_size, pygame.Color(255,255,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 125))
+            text_screen("Joueur 1 Gagne !", self.txt_font_size + 15, pygame.Color(255,255,0), self.screen, self.win_pos)
+            text_screen("Avec un score de : " + str(self.j1_score), self.txt_font_size + 5, pygame.Color(255,255,0), self.screen, (self.reso[0]/2 + - 10, self.reso[1] /2 + 40))
+            text_screen("Appuyez sur ESPACE pour reprendre et augmenter votre score", self.txt_font_size + 3, pygame.Color(255,0,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 90))
+            text_screen("!ATTENTION! vous perdrez votre score si vous perdez", self.txt_font_size + 5, pygame.Color(255,255,255), self.screen, (self.reso[0] /2, self.reso[1]/2 + 125))
 
             pygame.display.update()
             self.p2.vies = 5
