@@ -1,13 +1,13 @@
-# .github/workflows/ci.yml
+# .github/workflows/ci-cd.yml
 name: CI/CD Pipeline
 
 on:
   push:
-    # beta sur chaque commit vers main, stable sur chaque tag v*
-    branches: [ main ]
-    tags:     [ 'v*' ]
+    # beta à chaque commit sur main, stable à chaque tag v*
+    branches: [ "main" ]
+    tags:     [ "v*" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
 
@@ -25,7 +25,7 @@ jobs:
 
       - name: Créer requirements.txt temporaire
         run: |
-          echo "pygame" > requirements.txt
+          echo "pygame" >> requirements.txt
           echo "pytest" >> requirements.txt
 
       - name: Installer les dépendances
@@ -65,15 +65,9 @@ jobs:
     name: Deploy itch.io (beta / stable)
     needs: perf-test
     runs-on: windows-latest
-
     strategy:
       matrix:
         channel: [ "beta", "stable" ]
-
-    # beta sur main, stable sur tag v*
-    if: >
-      (matrix.channel == 'beta'  && github.ref == 'refs/heads/main') ||
-      (matrix.channel == 'stable' && startsWith(github.ref, 'refs/tags/v'))
 
     steps:
       - name: Checkout du code
@@ -106,13 +100,19 @@ jobs:
             -OutFile butler.zip
           Expand-Archive butler.zip -DestinationPath butler
 
-      - name: Push vers itch.io ({{ matrix.channel }}-${{ env.VERSION }})
+      - name: Push vers itch.io
+        if: >
+          (matrix.channel == 'beta'  && github.ref == 'refs/heads/main') ||
+          (matrix.channel == 'stable' && startsWith(github.ref, 'refs/tags/v'))
+        shell: powershell
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
-        shell: powershell
         run: .\butler\butler.exe push dist/ sossof/space-score:${{ matrix.channel }}-${{ env.VERSION }}
 
       - name: Génération du journal de version
+        if: >
+          (matrix.channel == 'beta'  && github.ref == 'refs/heads/main') ||
+          (matrix.channel == 'stable' && startsWith(github.ref, 'refs/tags/v'))
         shell: bash
         run: echo "Version -> ${{ matrix.channel }}-${{ env.VERSION }}" > dist/version.txt
 
